@@ -1,0 +1,48 @@
+name: Build and Package NuGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to publish (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Set Package Version
+      run: |
+        sed -i 's/<Version>.*<\/Version>/<Version>${{ github.event.inputs.version }}<\/Version>/' Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
+
+    - name: Build and Package
+      run: dotnet pack --configuration Release --output ./nuget
+
+    - name: Publish to GitHub Packages
+      env:
+        NUGET_SERVER_URL: "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        for nupkg in ./nuget/*.nupkg; do
+          dotnet nuget push "$nupkg" \
+            --source $NUGET_SERVER_URL \
+            --api-key $NUGET_API_KEY
+        done
+
