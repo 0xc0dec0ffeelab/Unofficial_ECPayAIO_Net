@@ -1,5 +1,5 @@
 # Unofficial_ECPayAIO_Net
-Unofficial ECPayAIO_Net support  [.net standard 2.1](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-1)
+Unofficial ECPayAIO_Net support  .NET 8
 
 
 ## Credits
