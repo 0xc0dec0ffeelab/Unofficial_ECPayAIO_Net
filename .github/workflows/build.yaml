@@ -38,7 +38,7 @@ jobs:
     - name: Publish to GitHub Packages
       env:
         NUGET_SERVER_URL: "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         for nupkg in ./nuget/*.nupkg; do
           dotnet nuget push "$nupkg" \
