@@ -26,14 +26,14 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
 
     - name: Set Package Version
       run: |
         sed -i 's/<Version>.*<\/Version>/<Version>${{ github.event.inputs.version }}<\/Version>/' Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
 
     - name: Build and Package
-      run: dotnet pack --configuration Release --output ./nuget
+      run: dotnet pack --configuration Release --output ./nuget Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
 
     - name: Publish to GitHub Packages
       env:
