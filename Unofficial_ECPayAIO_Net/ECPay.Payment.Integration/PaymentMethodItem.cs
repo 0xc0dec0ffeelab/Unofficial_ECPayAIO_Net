@@ -1,0 +1,41 @@
+﻿namespace ECPay.Payment.Integration
+{
+    public enum PaymentMethodItem
+    {
+        None = 0,
+        WebATM_TAISHIN = 1,
+        WebATM_ESUN = 2,
+        WebATM_HUANAN = 3,
+        WebATM_BOT = 4,
+        WebATM_FUBON = 5,
+        WebATM_CHINATRUST = 6,
+        WebATM_FIRST = 7,
+        WebATM_CATHAY = 8,
+        WebATM_MEGA = 9,
+        WebATM_YUANTA = 10,
+        WebATM_LAND = 11,
+        ATM_TAISHIN = 101,
+        ATM_ESUN = 102,
+        ATM_HUANAN = 103,
+        ATM_BOT = 104,
+        ATM_FUBON = 105,
+        ATM_CHINATRUST = 106,
+        ATM_FIRST = 107,
+        ATM_LAND = 108,
+        ATM_CATHAY = 109,
+        ATM_TACHONG = 200,
+        ATM_PANHSIN = 110,
+        CVS = 201,
+        CVS_OK = 202,
+        CVS_FAMILY = 203,
+        CVS_HILIFE = 204,
+        CVS_IBON = 205,
+        Alipay = 311,
+        Tenpay = 321,
+        TopUpUsed_AllPay = 401,
+        TopUpUsed_ESUN = 402,
+        BARCODE = 901,
+        Credit = 911,
+        COD = 921
+    }
+}
