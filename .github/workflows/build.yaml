@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version to publish (e.g., 1.0.0)'
-        required: true
+        description: 'The version to publish (git tag first or default e.g., 1.0.0)'
         default: '1.0.0'
 
 jobs:
@@ -25,12 +24,50 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
+    - name: Determine Version
+      id: determine-version
+      run: |
+        git fetch --tags
+        LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        if [ -z "$LAST_TAG" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION="$LAST_TAG"
+        fi
+        echo "Version: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_ENV
+
+    - name: Generate Changelog (Markdown)
+      id: changelog
+      run: |
+        git fetch --tags
+        LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        echo "Last tag: $LAST_TAG"
+        echo "# Changelog" > changelog.md
+        echo "" >> changelog.md
+        if [ -z "$LAST_TAG" ]; then
+          git log --pretty=format:"- %s (%an)" >> changelog.md
+        else
+          git log $LAST_TAG..HEAD --pretty=format:"- %s (%an)" >> changelog.md
+        fi
+        echo "" >> changelog.md
+        echo "Generated on $(date)" >> changelog.md
+        cat changelog.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Save Changelog as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: changelog
+        path: changelog.md
+
     - name: Restore dependencies
       run: dotnet restore Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
 
     - name: Set Package Version
       run: |
-        sed -i 's/<Version>.*<\/Version>/<Version>${{ github.event.inputs.version }}<\/Version>/' Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
+        sed -i 's/<Version>.*<\/Version>/<Version>${{ env.version }}<\/Version>/' Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
 
     - name: Build and Package
       run: dotnet pack --configuration Release --output ./nuget Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
