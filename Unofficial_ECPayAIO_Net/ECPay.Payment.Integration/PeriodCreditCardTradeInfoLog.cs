@@ -8,8 +8,8 @@
 
         public long gwsr { get; set; }
 
-        public string process_date { get; set; }
+        public string? process_date { get; set; }
 
-        public string auth_code { get; set; }
+        public string? auth_code { get; set; }
     }
 }
