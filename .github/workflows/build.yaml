@@ -11,6 +11,10 @@ jobs:
   build-and-package:
     runs-on: ubuntu-latest
 
+
+    permissions:
+      actions: write
+
     strategy:
       matrix:
         dotnet-version: ['8.0.x']
