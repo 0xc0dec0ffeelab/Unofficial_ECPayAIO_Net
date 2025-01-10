@@ -37,30 +37,51 @@ jobs:
         echo "Version: $VERSION"
         echo "version=$VERSION" >> $GITHUB_ENV
 
-    - name: Generate Changelog (Markdown)
+    - name: Generate Changelog (Dynamic Tags)
       id: changelog
       run: |
         git fetch --tags
+    
+        # Get the most recent tag
         LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-        echo "Last tag: $LAST_TAG"
-        echo "# Changelog" > changelog.md
-        echo "" >> changelog.md
+    
+        # Get the second most recent tag
+        PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
+    
+        echo "Last Tag: $LAST_TAG"
+        echo "Previous Tag: $PREVIOUS_TAG"
+
         if [ -z "$LAST_TAG" ]; then
-          git log --pretty=format:"- %s (%an)" >> changelog.md
+          # If no tags exist, include all commits
+          echo "No tags found. Using all commits."
+          git log --pretty=format:"- %s (%an)" > changelog.md
+        elif [ -z "$PREVIOUS_TAG" ]; then
+          # If there is only one tag, include all commits before that tag
+          echo "Only one tag ($LAST_TAG) found. Using commits before $LAST_TAG."
+          git log $LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
         else
-          git log $LAST_TAG..HEAD --pretty=format:"- %s (%an)" >> changelog.md
+          # If there are at least two tags, include commits between the two most recent tags
+          echo "Generating Changelog from $PREVIOUS_TAG to $LAST_TAG."
+          git log $PREVIOUS_TAG..$LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
         fi
+    
+        # Add the generation date to the changelog
         echo "" >> changelog.md
         echo "Generated on $(date)" >> changelog.md
+    
+        # Display the changelog for debugging purposes
         cat changelog.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Save Changelog as Artifact
-      uses: actions/upload-artifact@v4
+    - name: Upload Changelog to GitHub Release
+      uses: ncipollo/release-action@v1
       with:
-        name: changelog
-        path: changelog.md
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ env.version }}
+        name: Release ${{ env.version }}
+        body: |
+          $(cat changelog.md)
 
     - name: Restore dependencies
       run: dotnet restore Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
