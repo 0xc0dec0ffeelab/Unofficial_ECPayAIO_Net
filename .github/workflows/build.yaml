@@ -13,7 +13,7 @@ jobs:
 
 
     permissions:
-      contents: write
+      contents: write # write release
 
     strategy:
       matrix:
@@ -22,7 +22,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      # with:
+      # with: # uncomment if no tags to get
       #   fetch-depth: 0
       #   fetch-tags: true
 
@@ -86,7 +86,7 @@ jobs:
         tag: ${{ env.VERSION }}
         name: Release ${{ env.VERSION }}
         body: |
-            $(<changelog.md)
+            $(cat changelog.md)
 
     - name: Restore dependencies
       run: dotnet restore Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
