@@ -13,7 +13,7 @@ jobs:
 
 
     permissions:
-      actions: write
+      contents: write
 
     strategy:
       matrix:
