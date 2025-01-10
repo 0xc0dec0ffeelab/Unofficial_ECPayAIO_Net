@@ -40,37 +40,47 @@ jobs:
     - name: Generate Changelog (Dynamic Tags)
       id: changelog
       run: |
+        # Fetch all tags from the remote repository
         git fetch --tags
     
-        # Get the most recent tag
-        LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    
-        # Get the second most recent tag
-        PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
-    
-        echo "Last Tag: $LAST_TAG"
-        echo "Previous Tag: $PREVIOUS_TAG"
+        # Check if tags exist
+        TAGS=$(git tag -l)
 
-        if [ -z "$LAST_TAG" ]; then
-          # If no tags exist, include all commits
+        if [ -z "$TAGS" ]; then
           echo "No tags found. Using all commits."
           git log --pretty=format:"- %s (%an)" > changelog.md
-        elif [ -z "$PREVIOUS_TAG" ]; then
-          # If there is only one tag, include all commits before that tag
-          echo "Only one tag ($LAST_TAG) found. Using commits before $LAST_TAG."
-          git log $LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
         else
-          # If there are at least two tags, include commits between the two most recent tags
-          echo "Generating Changelog from $PREVIOUS_TAG to $LAST_TAG."
-          git log $PREVIOUS_TAG..$LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
+          # Get the latest tag
+          LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+      
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
+      
+          echo "Last Tag: $LAST_TAG"
+          echo "Previous Tag: $PREVIOUS_TAG"
+
+          if [ -z "$LAST_TAG" ]; then
+            # If no latest tag exists, use all commits
+            echo "No tags found. Using all commits."
+            git log --pretty=format:"- %s (%an)" > changelog.md
+          elif [ -z "$PREVIOUS_TAG" ]; then
+            # If only one tag exists, use commits before the latest tag
+            echo "Only one tag ($LAST_TAG) found. Using commits before $LAST_TAG."
+            git log $LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
+          else
+            # If there are at least two tags, use commits between the two most recent tags
+            echo "Generating Changelog from $PREVIOUS_TAG to $LAST_TAG."
+            git log $PREVIOUS_TAG..$LAST_TAG --pretty=format:"- %s (%an)" > changelog.md
+          fi
         fi
     
-        # Add the generation date to the changelog
+        # Add generation date
         echo "" >> changelog.md
         echo "Generated on $(date)" >> changelog.md
-    
-        # Display the changelog for debugging purposes
+
+        # Display the changelog for debugging
         cat changelog.md
+
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
