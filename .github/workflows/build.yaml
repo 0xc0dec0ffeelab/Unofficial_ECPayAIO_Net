@@ -85,8 +85,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ env.VERSION }}
         name: Release ${{ env.VERSION }}
-        body: |
-            $(cat changelog.md)
+        bodyFile: "changelog.md"
 
     - name: Restore dependencies
       run: dotnet restore Unofficial_ECPayAIO_Net/ECPay.Payment.Integration/ECPay.Payment.Integration.csproj
