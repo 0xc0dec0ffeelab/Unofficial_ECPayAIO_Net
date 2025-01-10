@@ -14,11 +14,12 @@ namespace ECPay.Payment.Integration
             object? value2 = array?[1];
             object? component = array?[2];
             _ = array?[3];
+            if (component == null) return false;
             PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-            var value3 = propertyDescriptorCollection.Find("Print", ignoreCase: true).GetValue(component);
-            if (value3.Equals(PrintFlag.Yes))
+            var value3 = propertyDescriptorCollection.Find("Print", ignoreCase: true)?.GetValue(component);
+            if (PrintFlag.Yes.Equals(value3))
             {
-                return IsValid(value2);
+                return base.IsValid(value2);
             }
             return true;
         }

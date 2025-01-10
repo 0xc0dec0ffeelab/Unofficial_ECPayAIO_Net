@@ -25,14 +25,15 @@ namespace ECPay.Payment.Integration
             object? component = array?[2];
             _ = array?[3];
             string[] array2 = ConfirmPropertyNames.Split('/');
+            if (component == null) return false;
             PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-            var value2 = propertyDescriptorCollection.Find("_PaymentMethod", ignoreCase: true).GetValue(component);
-            if (PaymentMethod.Equals(value2) && IsValid(obj2) && !PeriodType.None.Equals(obj2))
+            object? value2 = propertyDescriptorCollection.Find("_PaymentMethod", ignoreCase: true)?.GetValue(component);
+            if (PaymentMethod.Equals(value2) && base.IsValid(obj2) && !PeriodType.None.Equals(obj2))
             {
                 string[] array3 = array2;
                 foreach (string name in array3)
                 {
-                    var value3 = propertyDescriptorCollection.Find(name, ignoreCase: true).GetValue(component);
+                    var value3 = propertyDescriptorCollection.Find(name, ignoreCase: true)?.GetValue(component);
                     if (!PeriodType.None.Equals(value3) && null != value3)
                     {
                         return false;

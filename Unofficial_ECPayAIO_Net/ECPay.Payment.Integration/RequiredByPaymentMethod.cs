@@ -21,11 +21,12 @@ namespace ECPay.Payment.Integration
             object? value2 = array?[1];
             object? component = array?[2];
             _ = array?[3];
+            if (component == null) return false;
             PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-            object? value3 = propertyDescriptorCollection.Find("_PaymentMethod", ignoreCase: true).GetValue(component);
+            object? value3 = propertyDescriptorCollection.Find("_PaymentMethod", ignoreCase: true)?.GetValue(component);
             if (PaymentMethod.Equals(value3))
             {
-                return IsValid(value2);
+                return base.IsValid(value2);
             }
             return true;
         }

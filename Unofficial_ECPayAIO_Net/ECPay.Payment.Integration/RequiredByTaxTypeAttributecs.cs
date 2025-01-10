@@ -14,11 +14,12 @@ namespace ECPay.Payment.Integration
             object? obj2 = array?[1];
             object? component = array?[2];
             _ = array?[3];
+            if (component == null) return false;
             PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-            object value2 = propertyDescriptorCollection.Find("TaxType", ignoreCase: true).GetValue(component);
-            if (value2.Equals(TaxationType.ZeroTaxRate) && obj2 != null)
+            object? value2 = propertyDescriptorCollection.Find("TaxType", ignoreCase: true)?.GetValue(component);
+            if (TaxationType.ZeroTaxRate.Equals(value2) && obj2 != null)
             {
-                return !obj2.Equals(CustomsClearance.None);
+                return !CustomsClearance.None.Equals(obj2);
             }
             return true;
         }

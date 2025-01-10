@@ -8,9 +8,9 @@ namespace ECPay.Payment.Integration
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public class RequiredByInvoiceMarkAttribute : RequiredAttribute
     {
-        private readonly string[] szaPhoneOrEmail = new string[2] { "CustomerPhone", "CustomerEmail" };
+        private readonly string[] szaPhoneOrEmail = ["CustomerPhone", "CustomerEmail"];
 
-        private readonly string[] szaAllowEmpty = new string[4] { "CustomerID", "CustomerIdentifier", "CustomerName", "CustomerAddr" };
+        private readonly string[] szaAllowEmpty = ["CustomerID", "CustomerIdentifier", "CustomerName", "CustomerAddr"];
 
         public override bool IsValid(object? value)
         {
@@ -22,43 +22,44 @@ namespace ECPay.Payment.Integration
             if (null != obj3)
             {
                 PropertyDescriptorCollection? propertyDescriptorCollection = TypeDescriptor.GetProperties(obj3);
-                object value2 = propertyDescriptorCollection.Find("InvoiceMark", ignoreCase: true).GetValue(obj3);
-                if (value2.Equals(InvoiceState.Yes))
+                object? value2 = propertyDescriptorCollection.Find("InvoiceMark", ignoreCase: true)?.GetValue(obj3);
+                if (InvoiceState.Yes.Equals(value2))
                 {
-                    bool flag = IsValid(obj2);
+                    bool flag = base.IsValid(obj2);
                     if (!flag && szaPhoneOrEmail.Contains(obj))
                     {
                         object? value3 = null;
+                        if (component == null) return false;
                         propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-                        if (obj?.Equals("CustomerPhone") ?? false)
+                        if ("CustomerPhone".Equals(obj))
                         {
-                            value3 = propertyDescriptorCollection.Find("CustomerEmail", ignoreCase: true).GetValue(component);
+                            value3 = propertyDescriptorCollection.Find("CustomerEmail", ignoreCase: true)?.GetValue(component);
                         }
-                        if (obj?.Equals("CustomerEmail") ?? false)
+                        if ("CustomerEmail".Equals(obj))
                         {
-                            value3 = propertyDescriptorCollection.Find("CustomerPhone", ignoreCase: true).GetValue(component);
+                            value3 = propertyDescriptorCollection.Find("CustomerPhone", ignoreCase: true)?.GetValue(component);
                         }
-                        return IsValid(value3);
+                        return base.IsValid(value3);
                     }
-                    if (obj?.Equals("TaxType") ?? false)
+                    if ("TaxType".Equals(obj))
                     {
-                        return !obj2!.Equals(TaxationType.None);
+                        return !TaxationType.None.Equals(obj2);
                     }
-                    if (obj?.Equals("Donation") ?? false)
+                    if ("Donation".Equals(obj))
                     {
-                        return !obj2!.Equals(DonatedInvoice.None);
+                        return !DonatedInvoice.None.Equals(obj2);
                     }
-                    if (obj?.Equals("Print") ?? false)
+                    if ("Print".Equals(obj))
                     {
-                        return !obj2!.Equals(PrintFlag.None);
+                        return !PrintFlag.None.Equals(obj2);
                     }
-                    if (obj?.Equals("InvType") ?? false)
+                    if ("InvType".Equals(obj))
                     {
-                        return !obj2!.Equals(TheWordType.None);
+                        return !TheWordType.None.Equals(obj2);
                     }
                     if (szaAllowEmpty.Contains(obj))
                     {
-                        return obj2.Equals(string.Empty);
+                        return string.Empty.Equals(obj2);
                     }
                     return flag;
                 }

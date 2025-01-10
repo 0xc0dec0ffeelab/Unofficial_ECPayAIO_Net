@@ -17,26 +17,28 @@ namespace ECPay.Payment.Integration
             if (null != obj3)
             {
                 PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(obj3);
-                var value2 = propertyDescriptorCollection.Find("InvoiceMark", ignoreCase: true).GetValue(obj3);
-                if (value2.Equals(InvoiceState.Yes))
+                var value2 = propertyDescriptorCollection.Find("InvoiceMark", ignoreCase: true)?.GetValue(obj3);
+                if (InvoiceState.Yes.Equals(value2))
                 {
                     bool result = obj2 != null;
-                    if (obj?.Equals("CustomerID") ?? false)
+                    if ("CustomerID".Equals(obj))
                     {
+                        if (component == null) return false;
                         propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-                        var obj4 = propertyDescriptorCollection.Find("CarruerType", ignoreCase: true).GetValue(component);
-                        if (obj4.Equals(InvoiceVehicleType.Member))
+                        var obj4 = propertyDescriptorCollection.Find("CarruerType", ignoreCase: true)?.GetValue(component);
+                        if (InvoiceVehicleType.Member.Equals(obj4))
                         {
-                            return IsValid(obj2);
+                            return base.IsValid(obj2);
                         }
                     }
-                    else if (obj?.Equals("CarruerNum") ?? false)
+                    else if ("CarruerNum".Equals(obj))
                     {
+                        if (component == null) return false;
                         propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-                        var obj4 = propertyDescriptorCollection.Find("CarruerType", ignoreCase: true).GetValue(component);
-                        if (obj4.Equals(InvoiceVehicleType.NaturalPersonEvidence) || obj4.Equals(InvoiceVehicleType.PhoneBarcode))
+                        var obj4 = propertyDescriptorCollection.Find("CarruerType", ignoreCase: true)?.GetValue(component);
+                        if (InvoiceVehicleType.NaturalPersonEvidence.Equals(obj4) || InvoiceVehicleType.PhoneBarcode.Equals(obj4))
                         {
-                            return IsValid(obj2);
+                            return base.IsValid(obj2);
                         }
                     }
                     return result;

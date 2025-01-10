@@ -14,8 +14,9 @@ namespace ECPay.Payment.Integration
             object? obj2 = array?[1];
             object? component = array?[2];
             _ = array?[3];
+            if (component == null) return false;
             PropertyDescriptorCollection propertyDescriptorCollection = TypeDescriptor.GetProperties(component);
-            var value2 = propertyDescriptorCollection.Find("BindingCard", ignoreCase: true).GetValue(component);
+            var value2 = propertyDescriptorCollection.Find("BindingCard", ignoreCase: true)?.GetValue(component);
             string? value3 = null;
             string? text = null;
             if (null != obj2)
