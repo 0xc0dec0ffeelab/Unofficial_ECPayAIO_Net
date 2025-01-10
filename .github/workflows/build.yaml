@@ -18,9 +18,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        fetch-tags: true
+      # with:
+      #   fetch-depth: 0
+      #   fetch-tags: true
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -36,8 +36,8 @@ jobs:
         # Get the most recent tag
         LAST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
         
-        # Get the previous tag
-        PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
+        # Get the previous tag or empty
+        PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
 
         echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
         echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV
