@@ -9,7 +9,7 @@ namespace ECPay.Payment.Integration
 
         static SHA256Encoder()
         {
-            Crypto = new SHA256CryptoServiceProvider();
+            Crypto = SHA256.Create();
         }
 
         public static string Encrypt(string originalString)

@@ -9,7 +9,7 @@ namespace ECPay.Payment.Integration
 
         static MD5Encoder()
         {
-            Crypto = new MD5CryptoServiceProvider();
+            Crypto = MD5.Create();
         }
 
         public static string Encrypt(string originalString)
