@@ -12,19 +12,16 @@ Unofficial ECPayAIO_Net support  .NET 8
 
 
 ```
-
-
 ## API
 
-## 1. `(string htmlPostForm, IEnumerable<string> errors) CheckOut()`
-### Description
+### 1. `(string htmlPostForm, IEnumerable<string> errors) CheckOut()`
 Order Creation \
 (訂單產生)
 
-### Input
+Input \
 None.
 
-### Output
+Output
 | Field            | Type                  | Description                              |
 |------------------|-----------------------|------------------------------------------|
 | `htmlPostForm`   | `string`             | The HTML form generated for checkout.    |
@@ -32,17 +29,16 @@ None.
 
 ---
 
-## 2. `(IDictionary<string, string> feedback, IEnumerable<string> errors) CheckOutFeedback(HttpRequest CurrentRequest)`
-### Description
+### 2. `(IDictionary<string, string> feedback, IEnumerable<string> errors) CheckOutFeedback(HttpRequest CurrentRequest)`
 General Payment Result Notification / Authorization Success Notification for Credit Card Recurring Payments \
 (一般付款結果通知/Credit 定期定額的授權成功通知)
 
-### Input
+Input
 | Field            | Type                 | Description                              |
 |------------------|----------------------|------------------------------------------|
 | `CurrentRequest` | `HttpRequest`        | The current HTTP request object.         |
 
-### Output
+Output
 | Field            | Type                          | Description                              |
 |------------------|-------------------------------|------------------------------------------|
 | `feedback`       | `IDictionary<string, string>` | A dictionary containing feedback information. |
@@ -50,15 +46,14 @@ General Payment Result Notification / Authorization Success Notification for Cre
 
 ---
 
-## 3. `async Task<(IDictionary<string, string> feedback, IEnumerable<string> errors)> QueryTradeInfoAsync()`
-### Description
+### 3. `async Task<(IDictionary<string, string> feedback, IEnumerable<string> errors)> QueryTradeInfoAsync()`
 Order Query \
 (訂單查詢)
 
-### Input
+Input \
 None.
 
-### Output
+Output
 | Field            | Type                          | Description                              |
 |------------------|-------------------------------|------------------------------------------|
 | `feedback`       | `IDictionary<string, string>` | A dictionary containing trade feedback information. |
@@ -66,15 +61,14 @@ None.
 
 ---
 
-## 4. `async Task<(PeriodCreditCardTradeInfo? feedback, IEnumerable<string> errors)> QueryPeriodCreditCardTradeInfoAsync()`
-### Description
+### 4. `async Task<(PeriodCreditCardTradeInfo? feedback, IEnumerable<string> errors)> QueryPeriodCreditCardTradeInfoAsync()`
 Credit Card Recurring Payment Order Query \
 (信用卡定期定額訂單查詢)
 
-### Input
+Input \
 None.
 
-### Output
+Output
 | Field            | Type                              | Description                              |
 |------------------|-----------------------------------|------------------------------------------|
 | `feedback`       | `PeriodCreditCardTradeInfo?`     | Optional object containing trade information for a period. |
@@ -82,32 +76,30 @@ None.
 
 ---
 
-## 5. `async Task<(IDictionary<string, string> feedback, IEnumerable<string> errors)> DoActionAsync()`
-### Description
+### 5. `async Task<(IDictionary<string, string> feedback, IEnumerable<string> errors)> DoActionAsync()`
 Credit Card Settlement / Refund / Cancellation / Abandonment \
 (信用卡關帳／退刷／取消／放棄)
 
-### Input
+Input \
 None.
 
-### Output
+Output
 | Field            | Type                          | Description                              |
 |------------------|-------------------------------|------------------------------------------|
 | `feedback`       | `IDictionary<string, string>` | A dictionary containing feedback information. |
 | `errors`         | `IEnumerable<string>`         | List of error messages encountered.      |
 
 ---
-## 6. `async Task<IEnumerable<string>> TradeNoAioAsync(string filepath)`
-### Description
+### 6. `async Task<IEnumerable<string>> TradeNoAioAsync(string filepath)`
 Merchant Reconciliation Media File Download \
 (廠商下載對帳媒體檔)
 
-### Input
+Input
 | Field       | Type       | Description               |
 |-------------|------------|---------------------------|
 | `filepath`  | `string`   | Path to the file to process. |
 
-### Output
+Output
 | Field            | Type                  | Description                              |
 |------------------|-----------------------|------------------------------------------|
 | `errors`         | `IEnumerable<string>`| List of error messages encountered.      |
