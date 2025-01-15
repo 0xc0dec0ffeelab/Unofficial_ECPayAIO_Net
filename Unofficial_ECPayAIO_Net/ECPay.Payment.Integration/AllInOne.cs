@@ -295,108 +295,8 @@ namespace ECPay.Payment.Integration
                     hashtable.Add("DelayDay", SendExtend.DelayDay);
                     hashtable.Add("InvType", $"{(int)SendExtend.InvType:00}");
                 }
-                if (text == "ALL")
-                {
-                    if (!string.IsNullOrEmpty(SendExtend.CreditInstallment))
-                    {
-                        hashtable.Add("CreditInstallment", SendExtend.CreditInstallment);
-                    }
-                    if (SendExtend.InstallmentAmount.HasValue)
-                    {
-                        hashtable.Add("InstallmentAmount", SendExtend.InstallmentAmount);
-                    }
-                    if (SendExtend.Redeem.HasValue && SendExtend.Redeem.Value)
-                    {
-                        hashtable.Add("Redeem", "Y");
-                    }
-                    if (SendExtend.UnionPay.HasValue)
-                    {
-                        hashtable.Add("UnionPay", SendExtend.UnionPay.Value ? 1 : 0);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.PaymentInfoURL))
-                    {
-                        hashtable.Add("PaymentInfoURL", SendExtend.PaymentInfoURL);
-                    }
-                    if (SendExtend.PeriodAmount.HasValue)
-                    {
-                        hashtable.Add("PeriodAmount", SendExtend.PeriodAmount);
-                    }
-                    if (SendExtend.PeriodType != 0)
-                    {
-                        hashtable.Add("PeriodType", SendExtend.PeriodType.ToString()[..1]);
-                    }
-                    if (SendExtend.Frequency.HasValue)
-                    {
-                        hashtable.Add("Frequency", SendExtend.Frequency);
-                    }
-                    if (SendExtend.ExecTimes.HasValue)
-                    {
-                        hashtable.Add("ExecTimes", SendExtend.ExecTimes);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.PeriodReturnURL))
-                    {
-                        hashtable.Add("PeriodReturnURL", SendExtend.PeriodReturnURL);
-                    }
-                    if (!string.IsNullOrEmpty("AlipayItemName"))
-                    {
-                        hashtable.Add("AlipayItemName", SendExtend.AlipayItemName);
-                    }
-                    if (!string.IsNullOrEmpty("AlipayItemCounts"))
-                    {
-                        hashtable.Add("AlipayItemCounts", SendExtend.AlipayItemCounts);
-                    }
-                    if (!string.IsNullOrEmpty("AlipayItemPrice"))
-                    {
-                        hashtable.Add("AlipayItemPrice", SendExtend.AlipayItemPrice);
-                    }
-                    if (!string.IsNullOrEmpty("Email"))
-                    {
-                        hashtable.Add("Email", SendExtend.Email);
-                    }
-                    if (!string.IsNullOrEmpty("PhoneNo"))
-                    {
-                        hashtable.Add("PhoneNo", SendExtend.PhoneNo);
-                    }
-                    if (!string.IsNullOrEmpty("UserName"))
-                    {
-                        hashtable.Add("UserName", SendExtend.UserName);
-                    }
-                    if (SendExtend.BindingCard == BindingCardType.Yes)
-                    {
-                        hashtable.Add("BindingCard", 1);
-                    }
-                    if (SendExtend.BindingCard == BindingCardType.Yes && !string.IsNullOrEmpty(SendExtend.MerchantMemberID))
-                    {
-                        hashtable.Add("MerchantMemberID", SendExtend.MerchantMemberID);
-                    }
-                    if (SendExtend.StoreExpireDate.HasValue)
-                    {
-                        hashtable.Add("StoreExpireDate", SendExtend.StoreExpireDate.Value);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.Desc_1))
-                    {
-                        hashtable.Add("Desc_1", SendExtend.Desc_1);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.Desc_2))
-                    {
-                        hashtable.Add("Desc_2", SendExtend.Desc_2);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.Desc_3))
-                    {
-                        hashtable.Add("Desc_3", SendExtend.Desc_3);
-                    }
-                    if (!string.IsNullOrEmpty(SendExtend.Desc_4))
-                    {
-                        hashtable.Add("Desc_4", SendExtend.Desc_4);
-                    }
-                    hashtable.Add("ExpireDate", SendExtend.ExpireDate);
-                    if (!string.IsNullOrEmpty(SendExtend.ClientRedirectURL))
-                    {
-                        hashtable.Add("ClientRedirectURL", SendExtend.ClientRedirectURL);
-                    }
-                }
 
-                IDictionary<string, string> htmlDic = new Dictionary<string, string>();
+                IDictionary<string, string?> htmlDic = new Dictionary<string, string?>();
                 string empty = RenderControlAndParamenter(hashtable, htmlDic);
                 string empty2 = BuildCheckMacValue(empty, Send.EncryptType);
                 empty += RenderControlAndParamenter("CheckMacValue", empty2, htmlDic);
@@ -413,7 +313,7 @@ namespace ECPay.Payment.Integration
             return (htmlPostForm, errors);
         }
 
-        private string GenerateHtmlPostForm(string? action, string? id, IDictionary<string, string> parameters, string inputType = "hidden", bool autoSubmit = false)
+        private string GenerateHtmlPostForm(string? action, string? id, IDictionary<string, string?> parameters, string inputType = "hidden", bool autoSubmit = false)
         {
             StringBuilder htmlBuilder = new StringBuilder();
 
@@ -784,7 +684,7 @@ namespace ECPay.Payment.Integration
 
         private string BuildParamenter(string id, object? value)
         {
-            string arg = string.Empty;
+            string? arg = string.Empty;
             if (null != value)
             {
                 arg = ((!value.GetType().Equals(typeof(DateTime))) ? value.ToString() : ((DateTime)value).ToString("yyyy/MM/dd HH:mm:ss"));
@@ -792,9 +692,9 @@ namespace ECPay.Payment.Integration
             return $"&{id}={arg}";
         }
 
-        private string RenderControlAndParamenter(string id, object value, IDictionary<string, string> htmlDoc)
+        private string RenderControlAndParamenter(string id, object value, IDictionary<string, string?> htmlDoc)
         {
-            string value2 = string.Empty;
+            string? value2 = string.Empty;
             if (null != value)
             {
                 value2 = ((!value.GetType().Equals(typeof(DateTime))) ? value.ToString() : ((DateTime)value).ToString("yyyy/MM/dd HH:mm:ss"));
@@ -803,15 +703,15 @@ namespace ECPay.Payment.Integration
             return BuildParamenter(id, value);
         }
 
-        private string RenderControlAndParamenter(Hashtable parameters, IDictionary<string, string> htmlDoc)
+        private string RenderControlAndParamenter(Hashtable parameters, IDictionary<string, string?> htmlDoc)
         {
             string text = string.Empty;
             ArrayList? arrayList = new ArrayList(parameters.Keys);
             arrayList.Sort();
             foreach (string item in arrayList)
             {
-                string value = string.Empty;
-                object obj = parameters[item];
+                string? value = string.Empty;
+                object? obj = parameters[item];
                 if (null != obj)
                 {
                     value = ((!obj.GetType().Equals(typeof(DateTime))) ? obj.ToString() : ((DateTime)obj).ToString("yyyy/MM/dd HH:mm:ss"));
@@ -830,8 +730,8 @@ namespace ECPay.Payment.Integration
             arrayList.Sort();
             foreach (string item in arrayList)
             {
-                string value = string.Empty;
-                object obj = parameters[item];
+                string? value = string.Empty;
+                object? obj = parameters[item];
                 if (null != obj)
                 {
                     value = ((!obj.GetType().Equals(typeof(DateTime))) ? obj.ToString() : ((DateTime)obj).ToString("yyyy/MM/dd HH:mm:ss"));
@@ -848,7 +748,7 @@ namespace ECPay.Payment.Integration
             {
                 _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
                 HttpContent content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
-                using HttpResponseMessage response = await _httpClient.PostAsync(new Uri(ServiceURL), content);
+                using HttpResponseMessage response = await _httpClient.PostAsync(ServiceURL, content);
                 if (response.IsSuccessStatusCode)
                 {
                     result = (await response.Content.ReadAsStringAsync()).Trim();
@@ -868,7 +768,7 @@ namespace ECPay.Payment.Integration
             {
                 _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
                 HttpContent content = new StringContent(parameters, Encoding.UTF8, "application/x-www-form-urlencoded");
-                using HttpResponseMessage response = await _httpClient.PostAsync(new Uri(ServiceURL), content);
+                using HttpResponseMessage response = await _httpClient.PostAsync(ServiceURL, content);
                 if (response.IsSuccessStatusCode)
                 {
                     byte[] responseBytes = await response.Content.ReadAsByteArrayAsync();

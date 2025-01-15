@@ -33,7 +33,7 @@ namespace ECPay.Payment.Integration
                                         && (object)validationAttribute.GetType() != typeof(RegularExpressionAttribute)
                                         && (object)validationAttribute.GetType() != typeof(StringLengthAttribute)
                                     )
-                                        ? validationAttribute.IsValid(new object[4]
+                                        ? validationAttribute.IsValid(new object?[4]
                                             {
                                                 propInfo.Name,
                                                 propInfo.GetValue(source, BindingFlags.GetProperty, null, null, null),

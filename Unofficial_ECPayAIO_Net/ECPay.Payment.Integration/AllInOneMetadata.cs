@@ -25,15 +25,6 @@ namespace ECPay.Payment.Integration
             public string? Remark { get; set; }
 
             public event PropertyChangedEventHandler? PropertyChanged;
-
-            protected virtual void RaisePropertyEvents<T>(Expression<Func<SendArguments, T>> property)
-            {
-                if (!(property.Body is MemberExpression memberExpression) || memberExpression.Expression != property.Parameters[0] || memberExpression.Member.MemberType != MemberTypes.Property)
-                {
-                    throw new InvalidOperationException("Now tell me about the property");
-                }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberExpression.Member.Name));
-            }
         }
 
         public class SendArguments : BaseSendArguments, INotifyPropertyChanged
@@ -338,15 +329,6 @@ namespace ECPay.Payment.Integration
             public decimal TotalAmount { get; set; }
 
             public event PropertyChangedEventHandler? PropertyChanged;
-
-            protected virtual void RaisePropertyEvents<T>(Expression<Func<SendArguments, T>> property)
-            {
-                if (!(property.Body is MemberExpression memberExpression) || memberExpression.Expression != property.Parameters[0] || memberExpression.Member.MemberType != MemberTypes.Property)
-                {
-                    throw new InvalidOperationException("Now tell me about the property");
-                }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberExpression.Member.Name));
-            }
         }
 
         public class QueryArguments : BaseQueryArguments
@@ -391,15 +373,6 @@ namespace ECPay.Payment.Integration
                 NewFormatedMedia = true;
                 CharSet = CharSetState.Default;
             }
-
-            protected virtual void RaisePropertyEvents<T>(Expression<Func<SendArguments, T>> property)
-            {
-                if (!(property.Body is MemberExpression memberExpression) || memberExpression.Expression != property.Parameters[0] || memberExpression.Member.MemberType != MemberTypes.Property)
-                {
-                    throw new InvalidOperationException("Now tell me about the property");
-                }
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(memberExpression.Member.Name));
-            }
         }
 
         public SendArguments Send { get; private set; }
@@ -426,7 +399,7 @@ namespace ECPay.Payment.Integration
             TradeFile = new TradeFileArguments();
         }
 
-        private void Send_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Send_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ChoosePayment")
             {
