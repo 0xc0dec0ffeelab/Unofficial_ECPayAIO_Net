@@ -110,6 +110,33 @@ public class OrderApiController : Controller
       
   }
 
+  /// <summary>
+  /// Payment Result Notification
+  /// </summary>
+  /// <returns></returns>
+  [HttpPost("callback")]
+  public IActionResult PaymentCallback()
+  {
+      try
+      {
+          var (feedback, errors) = _allInOne.CheckOutFeedback(HttpContext.Request);
+  
+          foreach (var kv in feedback)
+          {
+              Console.WriteLine($"PaymentCallback key: {kv.Key}, value: {kv.Value}");
+          }
+  
+          return Ok("1|OK");
+      }
+      catch
+      {
+          return new ObjectResult("0|Error")
+          {
+              StatusCode = 500
+          };
+      }
+   }
+
 }
 
 
