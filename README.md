@@ -8,10 +8,158 @@ Unofficial ECPayAIO_Net support  .NET 8
 3. `dotnet add package Unofficial_ECPayAIO_Net`   
 
 ## Quick Start
+
+Program.cs
 ```cs
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddHttpClient();
+```
+appsettings.Development.json
+```js
+
+{
+  "DetailedErrors": true,
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ECPay": {
+    "ReturnURL": "",  // your ReturnURL
+    "OrderResultURL": "", // your OrderResultURL
+    "ClientBackURL": "" // your ClientBackURL
+  }
+}
+```
+
+OrderApiController.cs \
+`checkoutForm` is your html form id.
+```cs
+
+using ECPay.Payment.Integration;
+using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("api/order")]
+public class OrderApiController : Controller
+{
+
+  private readonly HttpClient _client;
+  private readonly AllInOne _allInOne;
+  private readonly IConfiguration _configuration;
+
+  public OrderApiController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+  {
+      _client = httpClientFactory.CreateClient();
+      _allInOne = new AllInOne(_client, checkoutFormId: "checkoutForm");
+      _allInOne.HashKey = "pwFHCqoQZGmho4w6";  //ECPay Hash Key
+      _allInOne.HashIV = "EkRm7iFT261dpevs";   //ECPay Hash IV
+      _allInOne.MerchantID = "3002607";        //ECPay MerchantID
+      _configuration = configuration;
+  }
+
+  /// <summary>
+  /// generate order html
+  /// </summary>
+  /// <returns></returns>
+  [HttpPost("create")]
+  public async Task<IActionResult> Create(OrderViewModel order)
+  {
+        string? ReturnURL = _configuration["ECPay:ReturnURL"];
+        string? OrderResultURL = _configuration["ECPay:OrderResultURL"];
+        string? ClientBackURL = _configuration["ECPay:ClientBackURL"];
+  
+        _allInOne.ServiceMethod = ECPay.Payment.Integration.HttpMethod.HttpPOST;
+        _allInOne.ServiceURL = @"https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";
+  
+        string MerchantTradeNo = $"fd{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+  
+       _allInOne.Send.ReturnURL = ReturnURL;
+       _allInOne.Send.ClientBackURL = ClientBackURL;
+       _allInOne.Send.OrderResultURL = OrderResultURL;
+       _allInOne.Send.MerchantTradeNo = MerchantTradeNo;
+       _allInOne.Send.MerchantTradeDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+       _allInOne.Send.TotalAmount = Decimal.Parse("6000");
+       _allInOne.Send.TradeDesc = "fd transdesc";
+       _allInOne.Send.ChoosePayment = PaymentMethod.ALL;
+       _allInOne.Send.Remark = "";
+       _allInOne.Send.ChooseSubPayment = PaymentMethodItem.None;
+       _allInOne.Send.NeedExtraPaidInfo = ExtraPaymentInfo.Yes;
+       _allInOne.Send.DeviceSource = DeviceType.PC;
+       _allInOne.Send.IgnorePayment = "";
+       _allInOne.Send.PlatformID = "";
+       _allInOne.Send.CustomField1 = "";
+       _allInOne.Send.CustomField2 = "";
+       _allInOne.Send.CustomField3 = "";
+       _allInOne.Send.CustomField4 = "";
+       _allInOne.Send.EncryptType = 1;
+      
+       _allInOne.Send.Items.Add(new Item()
+       {
+           Name = "fd2",
+           Price = Decimal.Parse("6000"),
+           Currency = "新台幣",
+           Quantity = Int32.Parse("1"),
+           URL = "",
+       });
+
+       var (htmlForm, errors) = _allInOne.CheckOut();
+
+       return Content(htmlForm, "text/html");
+      
+  }
+
+}
 
 
 ```
+
+
+index.html (url = "OrderResultURL")
+```html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>order test</title>
+</head>
+<body>
+    <button id="sendPostRequest">Submit Order</button>
+    <div id="checkoutContent"></div>
+    <script src="./orders.js" defer></script>
+</body>
+</html>
+
+```
+
+order.js
+```js
+
+document.getElementById('sendPostRequest').addEventListener('click', function (event) {
+    var data = {
+        orderId: '12345',
+    };
+
+    fetch([Your_Create_Order_API_Url], {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('checkoutContent').innerHTML = html;
+        document.getElementById("checkoutForm").submit(); // checkoutForm is your html form id
+    })
+    .catch(error => {
+        document.getElementById('checkoutContent').innerHTML = '<p>An error occurred while processing your request.</p>';
+    });
+});
+```
+
 ## API
 
 ### 1. `(string htmlPostForm, IEnumerable<string> errors) CheckOut()`
