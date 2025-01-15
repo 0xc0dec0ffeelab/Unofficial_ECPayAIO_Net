@@ -5,7 +5,7 @@ Unofficial ECPayAIO_Net support  .NET 8
 
 1. apply for [personal access token @GitHub](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry#installing-a-package)
 2. add https://nuget.pkg.github.com/0xc0dec0ffeelab/index.json as nuget source and input the password (=personal access token)
-   
+3. `dotnet add package Unofficial_ECPayAIO_Net`   
 
 ## Quick Start
 ```cs
