@@ -541,57 +541,6 @@ namespace ECPay.Payment.Integration
             return (feedback, errors);
         }
 
-        public async Task<(IDictionary<string, string> feedback, IEnumerable<string> errors)> AioChargebackAsync()
-        {
-            string text = string.Empty;
-            string empty = string.Empty;
-            List<string> errors = new List<string>();
-            IDictionary<string, string> feedback = new Dictionary<string, string>();
-            errors.AddRange(ServerValidator.Validate(this));
-            errors.AddRange(ServerValidator.Validate(ChargeBack));
-            if (errors.Count == 0)
-            {
-                empty += BuildParamenter("ChargeBackTotalAmount", ChargeBack.ChargeBackTotalAmount);
-                empty += BuildParamenter("MerchantID", MerchantID);
-                empty += BuildParamenter("MerchantTradeNo", ChargeBack.MerchantTradeNo);
-                empty += BuildParamenter("Remark", ChargeBack.Remark);
-                empty += BuildParamenter("TradeNo", ChargeBack.TradeNo);
-                string empty2 = BuildCheckMacValue(empty);
-                empty += BuildParamenter("CheckMacValue", empty2);
-                empty = empty[1..];
-                Logger.WriteLine(string.Format("INFO   {0}  OUTPUT  AllInOne.AioChargeback: {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), empty));
-                if (ServiceMethod == HttpMethod.ServerPOST)
-                {
-                    text = await ServerPostAsync(empty);
-                }
-                else
-                {
-                    errors.Add("No service for HttpPOST, HttpGET.");
-                }
-                Logger.WriteLine(string.Format("INFO   {0}  INPUT   AllInOne.AioChargeback: {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), text));
-                string[] array = text.Split('|');
-                if (array.Length == 2)
-                {
-                    string value = array[0];
-                    string value2 = array[1];
-                    feedback.Add("RtnCode", value);
-                    feedback.Add("RtnMsg", value2);
-                }
-                if (text != "1|OK")
-                {
-                    if (text.Length > 2)
-                    {
-                        errors.Add(text[2..].Replace("-", ": "));
-                    }
-                    else
-                    {
-                        errors.Add("Feedback message error!");
-                    }
-                }
-            }
-            return (feedback, errors);
-        }
-
         public async Task<IEnumerable<string>> TradeNoAioAsync(string filepath)
         {
             Hashtable hashtable = new Hashtable();

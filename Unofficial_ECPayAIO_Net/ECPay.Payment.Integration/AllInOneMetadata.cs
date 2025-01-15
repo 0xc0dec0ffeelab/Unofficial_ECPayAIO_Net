@@ -8,24 +8,6 @@ namespace ECPay.Payment.Integration
 {
     public class AllInOneMetadata : CommonMetadata
     {
-        public class ChargeBackArguments : INotifyPropertyChanged
-        {
-            [Required(ErrorMessage = "{0} is required.")]
-            [StringLength(20, ErrorMessage = "{0} max langth as {1}.")]
-            public string? MerchantTradeNo { get; set; }
-
-            [Required(ErrorMessage = "{0} is required.")]
-            [StringLength(20, ErrorMessage = "{0} max langth as {1}.")]
-            public string? TradeNo { get; set; }
-
-            [Required(ErrorMessage = "{0} is required.")]
-            public decimal ChargeBackTotalAmount { get; set; }
-
-            [StringLength(100, ErrorMessage = "{0} max langth as {1}.")]
-            public string? Remark { get; set; }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
-        }
 
         public class SendArguments : BaseSendArguments, INotifyPropertyChanged
         {
@@ -383,8 +365,6 @@ namespace ECPay.Payment.Integration
 
         public ActionArguments Action { get; private set; }
 
-        public ChargeBackArguments ChargeBack { get; private set; }
-
         public TradeFileArguments TradeFile { get; private set; }
 
         public AllInOneMetadata()
@@ -395,7 +375,6 @@ namespace ECPay.Payment.Integration
             SendExtend = new SendExtendArguments();
             Query = new QueryArguments();
             Action = new ActionArguments();
-            ChargeBack = new ChargeBackArguments();
             TradeFile = new TradeFileArguments();
         }
 
