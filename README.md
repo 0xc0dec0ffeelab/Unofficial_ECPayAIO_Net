@@ -1,5 +1,5 @@
 # Unofficial_ECPayAIO_Net
-Unofficial ECPayAIO_Net support  .NET 8
+Unofficial ECPayAIO_Net package support  .NET 8
 
 ## Installation
 
